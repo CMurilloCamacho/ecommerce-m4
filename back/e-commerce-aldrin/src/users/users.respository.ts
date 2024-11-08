@@ -117,7 +117,35 @@ export class UsersRepository {
     }
     
   ];
-  getUsers(): User[] {
-    return this.users
+  getUsers(page: number, limit: number): User[] {
+    const start = (page-1)*limit
+    const end = start + +limit
+
+    return this.users.slice(start, end)
+  }
+
+  getUserById(id:number){
+    return this.users.find(user => user.id === id)
+  }
+
+  createUser(user: any){
+    const id = this.users.length +1
+    user.id =id
+    this.users.push(user)
+    return user
+  }
+
+  deleteUser(id:number){
+    this.users = this.users.filter(user=>user.id !== id)
+     return "Se eliminó al usuario"
+  }
+
+  updateUser(id:number, user: any){
+    const oldUser = this.users.find((user)=>user.id === id)
+
+    const updateUser = {...oldUser, ...user}
+    return updateUser
+
+
   }
 }
