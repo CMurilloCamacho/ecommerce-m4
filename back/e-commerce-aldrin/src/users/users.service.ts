@@ -5,9 +5,9 @@ import { UsersRepository } from './users.respository';
 
 @Injectable()
 export class UsersService {
-  constructor(private usersRepository: UsersRepository ) {}
+  constructor(private usersRepository: UsersRepository) {}
   create(createUserDto: any) {
-    return this.usersRepository.createUser(createUserDto)
+    return this.usersRepository.createUser(createUserDto);
   }
 
   findAll(page, limit) {
@@ -15,15 +15,14 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return this.usersRepository.getUserById(id)
-
+    return this.usersRepository.getUserById(id);
   }
 
   update(id: number, updateUserDto: any) {
-    return this.usersRepository.updateUser(id, updateUserDto)
+    return this.usersRepository.updateUser(id, updateUserDto);
   }
 
   remove(id: number) {
-    return this.usersRepository.deleteUser(id)
+    return this.usersRepository.deleteUser(id);
   }
 }

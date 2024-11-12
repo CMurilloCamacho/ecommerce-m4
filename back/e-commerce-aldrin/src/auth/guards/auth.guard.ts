@@ -6,7 +6,6 @@ const validate = (request) => {
   const authHeader = request.headers.authorization
   if(!authHeader) return false;
   const auth =authHeader.split(' ')[1]
-  console.log('auth', auth);
   
   if(!auth) return false;
   const[email, password] = auth.split(':')
@@ -20,6 +19,7 @@ export class AuthGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest()
+    
 
     return validate(request);
   }

@@ -117,8 +117,9 @@ export class UsersRepository {
     }
     
   ];
-  getUsers(page: number, limit: number): User[] {
-    const start = (page-1)*limit
+  private id:number = 1;
+  getUsers(page: string, limit: string): User[] {
+    const start = (parseInt(page,10)-1)*parseInt(limit,10)
     const end = start + +limit
 
     return this.users.slice(start, end)
@@ -129,8 +130,9 @@ export class UsersRepository {
   }
 
   createUser(user: any){
-    const id = this.users.length +1
-    user.id =id
+    user.id =this.id;
+
+    this.id++
     this.users.push(user)
     return user
   }

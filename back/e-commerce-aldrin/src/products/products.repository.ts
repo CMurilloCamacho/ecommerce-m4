@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 
-export interface Product  {
+export interface Product {
   id: number;
   name: string;
   description: string;
@@ -92,7 +92,35 @@ export class ProductsRepository {
       imgUrl: 'https://example.com/images/wireless-charger.jpg',
     },
   ];
-  getProducts(): Product[] {
-    return this.products;
+  private id: number = 1;
+
+  getProducts(page: string, limit: string): Product[] {
+    const start = (parseInt(page) - 1) * parseInt(limit);
+    const end = start + +limit;
+
+   return this.products.slice(start, end);
+   
   }
+  findOneProduct(id: number) {
+    return this.products.find((product) => product.id === id);
+  }
+
+  createProduct(newProduct) {
+    newProduct.id = this.id;
+    this.id++;
+
+    this.products.push(newProduct);
+    return newProduct;
+  }
+
+  deleteProduct(id: number) {
+    this.products = this.products.filter((product) => product.id !== id);
+    return 'Usuario eliminado'
+  }
+  updateProduct(id: number, updateProduct: any) {
+   const previusProduct = this.products.find((product) => product.id === id);
+   const newProduct = {...previusProduct, ...updateProduct}
+    return newProduct
+  }
+
 }
