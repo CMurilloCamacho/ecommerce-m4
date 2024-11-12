@@ -40,7 +40,7 @@ export class Products {
   @Column({
     type: 'text',
     nullable: false,
-    default: false,
+    default: 'texto',
   })
   imgUrl: string
 

@@ -30,14 +30,14 @@ export class UsersController {
   }
 
   @Post()
-  create(@Body() createUserDto: any) {
+  create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
-  update(@Param('id') id: number, @Body() updateUserDto: any) {
-    return this.usersService.update(+id, updateUserDto);
+  update(@Param('id') id: number, @Body() createUserDto: Partial<CreateUserDto>) {
+    return this.usersService.update(+id, createUserDto);
   }
 
   @Delete(':id')
