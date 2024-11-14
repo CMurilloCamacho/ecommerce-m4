@@ -28,7 +28,7 @@ export class Users {
   })
   password: string;
   @Column({
-    type: 'int',
+    type: 'text',
   })
   phone: number;
   @Column({

@@ -8,9 +8,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import typeorm from './config/typeorm';
 import { CategoriesModule } from './categories/categories.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
-  imports: [ProductsModule, UsersModule, AuthModule, ConfigModule.forRoot({
+  imports: [OrdersModule, ProductsModule, UsersModule, AuthModule, ConfigModule.forRoot({
     isGlobal : true,
     load : [typeorm]
   }),
@@ -19,7 +20,8 @@ import { CategoriesModule } from './categories/categories.module';
     useFactory: (config: ConfigService) =>config.get('typeorm')
 
   }),
-     CategoriesModule ],
+     CategoriesModule,
+     OrdersModule ],
   controllers: [AppController],
   providers: [AppService],
 })

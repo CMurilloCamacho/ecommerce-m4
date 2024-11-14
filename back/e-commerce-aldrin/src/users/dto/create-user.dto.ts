@@ -1,59 +1,66 @@
-import {   IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from "class-validator";
-
-
-
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class CreateUserDto {
   
   @IsNotEmpty()
   @IsString()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
   @MinLength(3)
   @MaxLength(80)
-name:string;
+  name: string;
 
-@IsNotEmpty()
-  @IsString()
-email:string;
 
-@IsNotEmpty()
+  @IsNotEmpty()
   @IsString()
   @MinLength(8)
-  @MaxLength(15)
-password:string;
+  // @MaxLength(15)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).+$/, {
+    message:
+      'Toda contraseña debe tener al menos una letra minuscula, una letra mayuscula, un numero  y una letra especial !@#$%^&*',
+  })
+  password: string;
 
-@IsNotEmpty()
+  @IsNotEmpty()
   @IsString()
   @MinLength(3)
   @MaxLength(80)
-address:string;
+  address: string;
 
-@IsNotEmpty()
+  @IsNotEmpty()
   @IsNumber()
-  @MinLength(3)
-  @MaxLength(80)
-phone:string;
+  phone: number;
 
-@IsNotEmpty()
+  @IsNotEmpty()
   @IsString()
   @MinLength(5)
   @MaxLength(20)
-conutry:string 
+  country: string;
 
-@IsNotEmpty()
+  @IsNotEmpty()
   @IsString()
   @MinLength(5)
   @MaxLength(20)
-city:string 
+  city: string;
 }
 
 export class LoginUserdto {
   @IsNotEmpty()
   @IsString()
-email:string;
+  email: string;
 
-@IsNotEmpty()
+  @IsNotEmpty()
   @IsString()
   @MinLength(8)
   @MaxLength(15)
-password:string;
+  password: string;
 }

@@ -20,7 +20,7 @@ export class Orders {
   date: Date;
 
   @OneToOne(() => OrderDetails, (orderDetails) => orderDetails.order)
-  orderDetails = OrderDetails;
+  orderDetails : OrderDetails;
 
   @ManyToOne(() => Users, (user) => user.orders)
   @JoinColumn({ name: 'USER_ID' })

@@ -1,9 +1,9 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Products } from "./products.entity";
 import { Orders } from "./orders.entity";
 
 @Entity({
-  name: 'ORDERDETAILS'
+  name: 'ORDER_DETAILS'
 })
 export class OrderDetails {
 
