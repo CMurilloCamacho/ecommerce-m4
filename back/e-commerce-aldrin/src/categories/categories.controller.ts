@@ -9,4 +9,8 @@ export class CategoriesController {
       return this.categoriesService.addCategories()
     
   }
+  @Get()
+  async getCategories(){
+    return await this.categoriesService.getCategories()
+  }
 }

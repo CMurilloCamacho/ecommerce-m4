@@ -15,7 +15,6 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { Users } from 'src/entities/users.entity';
-import { UpdateUserDto} from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {

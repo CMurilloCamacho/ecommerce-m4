@@ -4,42 +4,57 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
+import { CreateProductDto } from './dto/create.products.dto';
+import { UpdateProductsDto } from './dto/update-products.dto';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(private  productsService: ProductsService) {}
 
   @Get()
-  getProducts(@Query('page') page: string, @Query('limit') limit: string) {
-    if (page && limit) return this.productsService.getProducts();
+  async getProducts(@Query('page') page: string, @Query('limit') limit: string) {
+    if (page && limit) return this.productsService.getProducts(parseInt(page), parseInt(limit));
+    return await this.productsService.getProducts(1,5)
   }
-  // @Get(':id')
-  // findOneProduct(@Param('id', new ParseIntPipe()) id: number) {
-  //   return this.productsService.findOneProduct(id);
-  // }
-  // @Post()
-  // createProduct(@Body() newProduct: any) {
-  //   return this.productsService.createProduct(newProduct);
-  // }
-  // @Put(':id')
-  // updateProduct(
-  //   @Param('id', new ParseIntPipe()) id: number,
-  //   @Body() updateProduct: any,
-  // ) {
-  //   return this.productsService.updateProduct(id, updateProduct);
-  // }
-  // @Delete(':id')
-  // deleteProduct(@Param('id', new ParseIntPipe()) id: number) {
-  //   return this.productsService.deleteProduct(id);
-  // }
+
+
   @Get('seeder')
   addProducts(){
     return this.productsService.addProducts()
   }
+
+  @Get(':id')
+  getProduct(@Param('id', ParseUUIDPipe) id: string) {
+    console.log("este es el id", id);
+    return this.productsService.getProduct(id);
+    
+
+  }
+
+  @Post()
+ async createProduct(@Body() product: CreateProductDto) {
+   return await this.productsService.createProduct(product);
+  }
+  @Put(':id')
+  async updateProduct(
+    @Param('id', ParseUUIDPipe) id: number,
+    @Body() updateProduct:UpdateProductsDto,
+  ) {
+    return await this.productsService.updateProduct(id, updateProduct);
+  }
+
+
+  @Delete(':id')
+  async deleteProduct(@Param('id', ParseUUIDPipe) id: number) {
+    return await this.productsService.deleteProduct(id);
+  }
+
+
+
 }

@@ -9,9 +9,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import typeorm from './config/typeorm';
 import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 @Module({
-  imports: [OrdersModule, ProductsModule, UsersModule, AuthModule, ConfigModule.forRoot({
+  imports: [FileUploadModule, OrdersModule, ProductsModule, UsersModule, AuthModule, ConfigModule.forRoot({
     isGlobal : true,
     load : [typeorm]
   }),
@@ -21,7 +22,8 @@ import { OrdersModule } from './orders/orders.module';
 
   }),
      CategoriesModule,
-     OrdersModule ],
+     OrdersModule,
+     FileUploadModule ],
   controllers: [AppController],
   providers: [AppService],
 })
