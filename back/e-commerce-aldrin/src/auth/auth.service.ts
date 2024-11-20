@@ -1,8 +1,54 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException,  Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Users } from 'src/entities/users.entity';
+import { Repository } from 'typeorm';
+import * as bcrypt from "bcrypt"
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  getAuth():string {
-    return "estamos en auth"
+  constructor(
+    @InjectRepository(Users) private userRepository: Repository<Users>, private jwtRepository:JwtService) {}
+  
+  getAuth() {
+    return "Autenticado"
+  }
+
+  async signIn (email:string, password:string){
+   
+    const user = await this.userRepository.findOneBy({email})
+    if(!user) {
+      throw new BadRequestException(`No se encontró al usuario: ${user}`)
+    }
+    const passwordMatch = await bcrypt.compare(password, user.password)
+   if(!passwordMatch) throw new BadRequestException(`Credencial inválido`)
+   
+    const payload = {
+      id : user.id,
+      email: user.email,
+      isAdmin: user.isAdmin
+  }
+    const token = this.jwtRepository.sign(payload)
+    return {
+      token, 
+      message: `El usuario se ha logeado correctamente`
+    }
+  }
+
+
+
+
+
+  async signUp(user:Partial<Users>){
+
+    const foundUser = await this.userRepository.findOneBy({email:user.email})
+    if(foundUser) throw new BadRequestException(`El usuario ya esta registrado`)
+
+      const hashedPassword = await bcrypt.hash(user.password, 10)
+    const newUser = {...user, password: hashedPassword}
+
+    const saveUser = await this.userRepository.save(newUser)
+    const{password,...userWithoutPassword} = saveUser
+    return userWithoutPassword
   }
 }

@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/entities/users.entity';
-import { Repository } from 'typeorm';
+import { CreateCollectionOptions, Repository } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -14,16 +15,18 @@ export class UsersService {
   async findAll(page:number, limit:number):Promise<Users[]> {
     
     const [users]= await this.usersRepository.findAndCount({skip: (page-1)*limit, take:limit})
-    return users
+    
+     const usersList =users.map(({isAdmin, ...users})=>users)
+    return usersList
     
 
   }
 
-  findOne(id: string) {
-    return this.usersRepository.findOne({ where: { id } });
+  async findOne(id: string) {
+    return await this.usersRepository.findOne({ where: { id } });
   }
 
-  async createUser(createUserDto: Users): Promise<Users>{
+  async createUser(createUserDto: CreateUserDto): Promise<Users>{
     // Object.assign(newUser, createUserDto)
     let newUser = new Users()
     newUser = this.usersRepository.create(createUserDto)
@@ -35,11 +38,11 @@ export class UsersService {
   }
 
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.usersRepository.update(id, updateUserDto);
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    return await this.usersRepository.update(id, updateUserDto);
   }
 
-  remove(id: number) {
-    return this.usersRepository.delete(id);
+  async remove(id: number) {
+    return await this.usersRepository.delete(id);
   }
 }

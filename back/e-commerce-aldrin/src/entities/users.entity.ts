@@ -20,15 +20,21 @@ export class Users {
     length: 50,
   })
   name: string;
+  @Column({
+    length: 50,
+    unique: true,
+    nullable: false,
+  })
+  email: string;
 
   @Column({
     type: 'varchar',
-    length: 20,
+    length: 100,
     nullable: false,
   })
   password: string;
   @Column({
-    type: 'text',
+    type: 'bigint',
   })
   phone: number;
   @Column({
@@ -46,7 +52,14 @@ export class Users {
   })
   city: string;
 
+  
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  isAdmin?: boolean;
+
   @OneToMany(() => Orders, (order) => order.user)
-  @JoinColumn({    name: 'ORDERS_ID'  })
-  orders: Orders[]
+  @JoinColumn({ name: 'ORDERS_ID' })
+  orders: Orders[];
 }

@@ -12,12 +12,14 @@ export class AuthController {
   }
 
   @Post('/signup')
-  signup(@Body() createUserdto:CreateUserDto){
-    return "info correcta"
+  signup(@Body() user:CreateUserDto){
+    const{confirmPassword, ...whitoutPassword} = user
+    return this.authService.signUp(whitoutPassword)
   }
 
   @Post('/signin')
-  signin(@Body() loginUserDto:LoginUserdto){
-    return 'info correcta'
+  signin(@Body() user:LoginUserdto){
+    const {email, password} = user
+    return this.authService.signIn(email, password)
   }
 }

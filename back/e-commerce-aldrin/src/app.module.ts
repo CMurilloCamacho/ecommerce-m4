@@ -10,9 +10,14 @@ import typeorm from './config/typeorm';
 import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [FileUploadModule, OrdersModule, ProductsModule, UsersModule, AuthModule, ConfigModule.forRoot({
+  imports: [FileUploadModule, OrdersModule, ProductsModule, JwtModule.register({
+    global: true,
+    secret: process.env.JWT_SECRET,
+    signOptions: {expiresIn: '1h'}
+  }), UsersModule, AuthModule, ConfigModule.forRoot({
     isGlobal : true,
     load : [typeorm]
   }),

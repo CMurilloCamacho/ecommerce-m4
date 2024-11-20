@@ -21,29 +21,30 @@ export class OrdersService {
     let total = 0;
 
     const user = await this.usersRepository.findOneBy({ id: userId });
-
+    if(!user) throw new Error(`No se ha encontrado el usuario con userId: ${userId}`)
+      else {
     const order = new Orders();
     order.date = new Date();
     order.user = user;
-
+    
     const newOrder = await this.ordersRepository.save(order);
-
+    
     const productsArray = await Promise.all(
       products.map(async (element) => {
         const product = await this.productsRepository.findOneBy({
           id: element.id,
         });
-
+        
         if(product.stock = 0) return "No hay productos"
-
+        
         total += Number(product.price);
-
+        
         await this.productsRepository.update({id:element.id},
           {stock: product.stock -1}
         )
-
-
-
+        
+        
+        
         return product;
       }),
     );
@@ -60,5 +61,9 @@ export class OrdersService {
         },
       },
     });
+  }
+  }
+  async getOrders(){
+    
   }
 }

@@ -8,10 +8,15 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create.products.dto';
 import { UpdateProductsDto } from './dto/update-products.dto';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { Roles } from 'src/decoradors/roles.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Role } from 'src/role.enum';
 
 @Controller('products')
 export class ProductsController {
@@ -41,7 +46,12 @@ export class ProductsController {
  async createProduct(@Body() product: CreateProductDto) {
    return await this.productsService.createProduct(product);
   }
+
   @Put(':id')
+  @Roles(Role.ADMIN)
+
+  @UseGuards(AuthGuard, RolesGuard)
+
   async updateProduct(
     @Param('id', ParseUUIDPipe) id: number,
     @Body() updateProduct:UpdateProductsDto,
