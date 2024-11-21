@@ -17,11 +17,12 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { Roles } from 'src/decoradors/roles.decorator';
 import { Role } from 'src/role.enum';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
+  @ApiBearerAuth()
   @Get()
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
@@ -35,15 +36,18 @@ export class UsersController {
   @Get(':id')
   @UseGuards(AuthGuard)
 
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.findOne(id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    let userFound = await this.usersService.findOne(id);
+  return userFound
+  
+    
   } 
 
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto) {  
     return  await this.usersService.createUser(createUserDto);
   }
-
+  @ApiBearerAuth()
   @Put(':id')
   @UseGuards(AuthGuard)
 
@@ -51,7 +55,7 @@ export class UsersController {
   update(@Param('id', ParseUUIDPipe) id: number, @Body() createUserDto: Partial<CreateUserDto>) {
     return this.usersService.update(+id, createUserDto);
   }
-
+  @ApiBearerAuth()
   @Delete(':id')
   @UseGuards(AuthGuard)
 

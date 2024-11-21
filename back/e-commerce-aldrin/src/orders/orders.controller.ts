@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderdto } from './create-order.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
@@ -10,8 +10,14 @@ export class OrdersController {
 
   //aplicar el Guardian en  GET/orders/:id
   @Get()
-  getOrders(){
-    return this.ordersService.getOrders()
+  getOrders(orderId){
+    return this.ordersService.getOrders(orderId)
+
+
+  }
+  @Get (':oderId')
+  getOrder (@Param('oderId') orderId:string) {
+    return this.ordersService.getOrder(orderId)
   }
 
 
@@ -21,6 +27,6 @@ export class OrdersController {
   createOrder(@Body() createOrder: CreateOrderdto){
 
     const{userId, products} = createOrder
-    return this.ordersService.createOrder(userId, products)
+    return this.ordersService.addOrder(userId, products)
   }
 }
