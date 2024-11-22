@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/entities/users.entity';
 import { CreateCollectionOptions, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { OrderDetails } from 'src/entities/orderDetails.entity';
+import { NotFoundError } from 'rxjs';
+
+type PublicUser = Omit<Users, "password">
 
 @Injectable()
 export class UsersService {
@@ -14,15 +17,17 @@ export class UsersService {
   create(createUserDto: Users) {
     return this.usersRepository.create(createUserDto);
   }
-
-  async findAll(page: number, limit: number): Promise<Users[]> {
+  async findAll(page: number, limit: number): Promise<PublicUser[]> {
     const [users] = await this.usersRepository.findAndCount({
       skip: (page - 1) * limit,
       take: limit,
     });
 
-    const updUsers = users.map(({ isAdmin, ...extractUsers }) => extractUsers);
-    return updUsers;
+    const PublicUser = users.map(({ isAdmin, password,  ...extractUsers }) => extractUsers);
+  
+    console.log("ESTO ES PUBLICUSER !!!!" ,PublicUser);
+    
+   return PublicUser
   }
 
   async findOne(id: string) {
@@ -33,7 +38,7 @@ export class UsersService {
       },
     });
     if (!user) {
-      throw new Error(`No se encontró un usuario con el ID: ${id}`);
+      throw new NotFoundException(`No se encontró un usuario con el ID: ${id}`);      //buscar errores  en nestJs
     }
 
     const response = {

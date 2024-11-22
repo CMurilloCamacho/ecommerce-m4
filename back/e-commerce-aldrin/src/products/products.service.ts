@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Categories } from 'src/entities/categories.entity';
 import { UpdateProductsDto } from './dto/update-products.dto';
 import * as data from '../data.json';
+import { CreateProductDto } from './dto/create.products.dto';
 
 @Injectable()
 export class ProductsService {
@@ -32,7 +33,7 @@ export class ProductsService {
     return this.productsRepository.find()
   }
 
-  async createProduct(product: any) {
+  async createProduct(product: CreateProductDto) {
     const newProduct = this.productsRepository.create(product);
     return await this.productsRepository.save(newProduct);
   }

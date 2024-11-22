@@ -23,10 +23,8 @@ export class OrderDetails {
 })
 products: Products[]
 
-@OneToOne(()=>Orders, order=>order.orderDetails)
-@JoinColumn({
-  name: 'order_id'
-})
+@OneToOne(()=>Orders)
+@JoinColumn()
 order : Orders
 
 }

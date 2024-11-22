@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/entities/users.entity';
 import { Repository } from 'typeorm';
@@ -42,16 +42,14 @@ export class OrdersService {
     const newOrder = await this.ordersRepository.save(order);
   
     // Procesar productos
-    for (const productId of products) {
-      const product = await this.productsRepository.findOneBy({
-        id: productId,
-      });
+    for (const prod of products) {
+      const product = await this.productsRepository.findOne({where: {id: prod.id}});
   
       if (!product) {
-        throw new Error(`El producto con ID: ${productId} no existe.`);
+        throw new NotFoundException(`El producto con ID: ${prod} no existe.`);
       }
       if (product.stock <= 0) {
-        throw new Error(`El producto con ID: ${productId} no tiene stock disponible.`);
+        throw new Error(`El producto con ID: ${prod} no tiene stock disponible.`);
       }
   
       // Reducir stock del producto
@@ -75,71 +73,27 @@ export class OrdersService {
     // Devolver la orden con relaciones
     return await this.ordersRepository.findOne({
       where: { id: newOrder.id },
-      relations: {
-        orderDetails: {
-          products: true,
-        },
-      },
+      relations: ['orderDetails', 'user']
     });
   }
 
-  async getOrders(orderId: string) {
-    const order = await this.ordersRepository.findOne({
-      where: { id: orderId },
-      relations: {
-        orderDetails: {
-          products: true,
-        },
-        user: true,
-      },
-    });
-    if (!order) {
-      throw new Error(`No se encontró una orden con el ID: ${orderId}`);
-    }
-    const response = {
-      userId: order.user.id,
-      products: order.orderDetails.products.map((product) => ({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        stock: product.stock,
-      })),
-    };
-    return response;
-  }
-
+async getOrders () {
+  return await this.ordersRepository.find({
+    relations: ['orderDetails', 'user']
+  })
+}
   async getOrder(orderId: string) {
     const order = await this.ordersRepository.findOne({
       where: {
         id: orderId,
       },
-      relations: {
-        orderDetails: {
-          products: true,
-        },
-        user: true,
-      },
+     
+      relations: ['orderDetails', 'user', 'orderDetails.products']
     });
     if (!order)
-      throw new Error(`No se encontró una orden con el ID: ${orderId}`);
-    const response = {
-      orderId: order.id,
-      date: order.date,
-      user: {
-        id: order.user.id,
-        name: order.user.name,
-        email: order.user.email,
-      },
-      orderDetails: {
-        price: order.orderDetails.price,
-        products: order.orderDetails.products.map((product) => ({
-          id: product.id,
-          name: product.name,
-          stock: product.stock,
-          imgUrl: product.imgUrl,
-        })),
-      },
-    };
-    return response;
+      throw new NotFoundException(`No se encontró una orden con el ID: ${orderId}`);
+  
+    
+    return order;
   }
 }

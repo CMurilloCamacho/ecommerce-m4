@@ -10,13 +10,13 @@ export class OrdersController {
 
   //aplicar el Guardian en  GET/orders/:id
   @Get()
-  getOrders(orderId){
-    return this.ordersService.getOrders(orderId)
+  getOrders(){
+    return this.ordersService.getOrders()
 
 
   }
-  @Get (':oderId')
-  getOrder (@Param('oderId') orderId:string) {
+  @Get (':orderId')
+  getOrder (@Param('orderId') orderId:string) {
     return this.ordersService.getOrder(orderId)
   }
 
