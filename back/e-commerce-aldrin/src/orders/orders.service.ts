@@ -18,82 +18,81 @@ export class OrdersService {
   ) {}
 
   async addOrder(userId: string, products: any) {
-    if(typeof products === 'string') products = [products]
+    if (typeof products === 'string') products = [products];
     if (!Array.isArray(products) || products.length === 0) {
       throw new Error(
         'El carrito de productos debe contener al menos un producto',
       );
     }
-  
+
     let total = 0;
     const productsArray = [];
-  
-    // Verificar usuario
+
     const user = await this.usersRepository.findOneBy({ id: userId });
     if (!user) {
       throw new Error(`No se ha encontrado el usuario con userId: ${userId}`);
     }
-  
-    // Crear orden inicial
+
     const order = new Orders();
     order.date = new Date();
     order.user = user;
-  
+
     const newOrder = await this.ordersRepository.save(order);
-  
-    // Procesar productos
+
     for (const prod of products) {
-      const product = await this.productsRepository.findOne({where: {id: prod.id}});
-  
+      const product = await this.productsRepository.findOne({
+        where: { id: prod.id },
+      });
+
       if (!product) {
         throw new NotFoundException(`El producto con ID: ${prod} no existe.`);
       }
       if (product.stock <= 0) {
-        throw new Error(`El producto con ID: ${prod} no tiene stock disponible.`);
+        throw new Error(
+          `El producto con ID: ${prod} no tiene stock disponible.`,
+        );
       }
-  
-      // Reducir stock del producto
+
       await this.productsRepository.update(
         { id: product.id },
         { stock: product.stock - 1 },
       );
-  
+
       total += Number(product.price);
       productsArray.push(product);
     }
-  
-    // Crear detalle de la orden
+
     const orderDetail = new OrderDetails();
     orderDetail.price = Number(total.toFixed(2));
     orderDetail.products = productsArray;
     orderDetail.order = newOrder;
-  
+
     await this.orderDetails.save(orderDetail);
-  
-    // Devolver la orden con relaciones
+
     return await this.ordersRepository.findOne({
       where: { id: newOrder.id },
-      relations: ['orderDetails', 'user']
+      relations: ['orderDetails'],
     });
   }
 
-async getOrders () {
-  return await this.ordersRepository.find({
-    relations: ['orderDetails', 'user']
-  })
-}
+  async getOrders() {
+    return await this.ordersRepository.find({
+      relations: ['orderDetails'],
+    });
+  }
   async getOrder(orderId: string) {
     const order = await this.ordersRepository.findOne({
       where: {
         id: orderId,
       },
-     
-      relations: ['orderDetails', 'user', 'orderDetails.products']
+
+      relations: ['orderDetails',  'orderDetails.products'],
     });
     if (!order)
-      throw new NotFoundException(`No se encontró una orden con el ID: ${orderId}`);
-  
-    
+      throw new NotFoundException(
+        `No se encontró una orden con el ID: ${orderId}`,
+      );
+
     return order;
   }
 }

@@ -41,7 +41,13 @@ export class AuthService {
 
   async signUp(user:Partial<Users>){
 
-    const foundUser = await this.userRepository.findOneBy({email:user.email})
+    const foundUser = await this.userRepository.findOne({
+      where: {email:user.email},
+    relations: ['orders']
+    },
+      
+
+    )
     if(foundUser) throw new BadRequestException(`El usuario ya esta registrado`)
 
       const hashedPassword = await bcrypt.hash(user.password, 10)

@@ -8,7 +8,7 @@ export class FileUploadController {
   constructor(private readonly fileUploadService: FileUploadService) {
   }
 
-    @Post('uploadImage/:id')
+    @Post('uploadImage/:productId')
   @UseGuards(AuthGuard)
 
     @UseInterceptors(FileInterceptor('file'))

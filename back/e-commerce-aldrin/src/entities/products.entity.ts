@@ -39,10 +39,10 @@ export class Products {
 
   @Column({
     type: 'text',
-    nullable: false,
+    nullable: true,
     default: 'texto',
   })
-  imgUrl: string
+  imgUrl?: string
 
   @ManyToOne(()=>Categories, category=>category.products)
   @JoinColumn({

@@ -1,13 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/entities/users.entity';
-import { CreateCollectionOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { OrderDetails } from 'src/entities/orderDetails.entity';
-import { NotFoundError } from 'rxjs';
+import { validate as isUuid } from 'uuid';
 
-type PublicUser = Omit<Users, "password">
+type PublicUser = Omit<Users, 'password'>;
 
 @Injectable()
 export class UsersService {
@@ -21,13 +25,14 @@ export class UsersService {
     const [users] = await this.usersRepository.findAndCount({
       skip: (page - 1) * limit,
       take: limit,
+      relations: ['orders'],
     });
 
-    const PublicUser = users.map(({ isAdmin, password,  ...extractUsers }) => extractUsers);
-  
-    console.log("ESTO ES PUBLICUSER !!!!" ,PublicUser);
-    
-   return PublicUser
+    const PublicUser = users.map(
+      ({ isAdmin, password, ...extractUsers }) => extractUsers,
+    );
+
+    return PublicUser;
   }
 
   async findOne(id: string) {
@@ -38,7 +43,7 @@ export class UsersService {
       },
     });
     if (!user) {
-      throw new NotFoundException(`No se encontró un usuario con el ID: ${id}`);      //buscar errores  en nestJs
+      throw new NotFoundException(`No se encontró un usuario con el ID: ${id}`); //buscar errores  en nestJs
     }
 
     const response = {
@@ -55,23 +60,51 @@ export class UsersService {
         date: order.date,
       })),
     };
-    return response
+    return response;
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<Users> {
-    // Object.assign(newUser, createUserDto)
-    let newUser = new Users();
-    newUser = this.usersRepository.create(createUserDto);
+    const checkEmail = await this.usersRepository.findOne({
+      where: {email: createUserDto.email}
+    })
 
-    console.log('este es nuevo usuario', newUser);
+    if(checkEmail) throw new ConflictException(`El email ${createUserDto.email} ya existe`)
+    const newUser = this.usersRepository.create(createUserDto);
+
     return await this.usersRepository.save(newUser);
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    return await this.usersRepository.update(id, updateUserDto);
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    if (!isUuid(id)) {
+      throw new BadRequestException(`él usuario con ID: ${id} no existe`);
+    }
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      relations: ['orders'],
+    });
+    if (!user)
+      throw new NotFoundException(`No se encontró el usuario con Id: ${id}`);
+    await this.usersRepository.update(id, updateUserDto);
+    const updateUser = await this.usersRepository.findOne({
+      where: { id },
+      relations: ['orders'],
+    });
+
+    const { password, ...withoutPass } = updateUser;
+
+    return withoutPass;
   }
 
-  async remove(id: number) {
-    return await this.usersRepository.delete(id);
+  async remove(id: string) {
+    if (!isUuid(id)) {
+      throw new BadRequestException(`él usuario con ID: ${id} no existe`);
+    }
+    const user = this.usersRepository.findOne({
+      where: { id },
+    });
+    if (!user)
+      throw new NotFoundException(`No se encontró al usuario con id: ${id}`);
+    await this.usersRepository.delete(id);
+    return 'Usuario Eliminado';
   }
 }

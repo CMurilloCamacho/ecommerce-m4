@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, IsUUID, MaxLength, MinLength } from "class-validator"
+import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, MaxLength, MinLength } from "class-validator"
 
 export class CreateProductDto {
   
@@ -15,8 +15,9 @@ export class CreateProductDto {
   price: number
   @IsNumber()
   stock: number
+  @IsOptional()
   @IsString()
-  imgUrl: string
+  imgUrl?: string
   
 
 }

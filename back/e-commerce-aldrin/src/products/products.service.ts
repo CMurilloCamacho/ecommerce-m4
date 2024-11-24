@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Products } from 'src/entities/products.entity';
 import { Repository } from 'typeorm';
@@ -30,7 +30,10 @@ export class ProductsService {
         id,
       },
     });
-    return this.productsRepository.find()
+    if (!product) {
+      throw new NotFoundException(`Producto con ID ${id} no encontrado`);
+    }
+    return product
   }
 
   async createProduct(product: CreateProductDto) {
@@ -48,12 +51,11 @@ export class ProductsService {
   async addProducts() {
     
     const categories = await this.categoriesRepository.find();
-    console.log('CATEGORIES', categories);
     data?.map(async (element) => {
       const category = categories.find(
         (category) => category.name === element.category,
       );
-      if (!category) throw new Error(`Category "${element.category}"`);
+      if (!category) throw new NotFoundException(`No hay la categoría "${element.category}"`);
       const product = new Products();
       product.name = element.name;
       product.description = element.description;
