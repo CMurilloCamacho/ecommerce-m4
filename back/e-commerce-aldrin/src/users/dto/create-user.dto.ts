@@ -41,7 +41,8 @@ export class CreateUserDto {
   @IsString()
   @MinLength(3)
   @MaxLength(80)
-  address: string;
+
+  fecha: string
 
   @IsNotEmpty()
   @IsNumber()

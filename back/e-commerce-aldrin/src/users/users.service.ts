@@ -29,8 +29,9 @@ export class UsersService {
     });
 
     const PublicUser = users.map(
-      ({ isAdmin, password, ...extractUsers }) => extractUsers,
+      ({ isAdmin, password,  ...extractUsers }) => extractUsers,
     );
+console.log('ESTO ES PUBLICUSER', PublicUser);
 
     return PublicUser;
   }

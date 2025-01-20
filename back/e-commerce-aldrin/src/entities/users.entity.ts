@@ -20,6 +20,8 @@ export class Users {
     length: 50,
   })
   name: string;
+
+
   @Column({
     length: 50,
     unique: true,

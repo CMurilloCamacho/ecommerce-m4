@@ -12,7 +12,7 @@ export class AuthController {
   }
 
   @Post('/signup')
-  signup(@Body() user:CreateUserDto){
+  signup(@Body() user:any){
     const{confirmPassword, ...whitoutPassword} = user
     return this.authService.signUp(whitoutPassword)
   }

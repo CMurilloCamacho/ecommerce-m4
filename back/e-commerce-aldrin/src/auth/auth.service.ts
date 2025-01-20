@@ -4,6 +4,7 @@ import { Users } from 'src/entities/users.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from "bcrypt"
 import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -39,7 +40,7 @@ export class AuthService {
 
 
 
-  async signUp(user:Partial<Users>){
+  async signUp(user: CreateUserDto){
 
     const foundUser = await this.userRepository.findOne({
       where: {email:user.email},

@@ -9,10 +9,8 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   //aplicar el Guardian en  GET/orders/:id
-  @Get()
-  getOrders() {
-    return this.ordersService.getOrders();
-  }
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':orderId')
   @ApiResponse({status: 404, description: 'Orden no encontrada'})
   
