@@ -17,6 +17,9 @@ const config = {
   autoLoadEntities: true,
   dropSchema: true,
   synchronize: true,
+  retryAttempts: 10,
+  retryDelay: 5000,
+  
 };
 export default registerAs('typeorm', () => config);
 export const connectionSource = new DataSource(config as DataSourceOptions);

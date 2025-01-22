@@ -2,7 +2,7 @@ import { BadRequestException,  Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/entities/users.entity';
 import { Repository } from 'typeorm';
-import * as bcrypt from "bcrypt"
+import * as bcrypt from "bcryptjs"
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
