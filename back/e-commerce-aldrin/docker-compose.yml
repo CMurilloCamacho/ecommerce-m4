@@ -1,10 +1,11 @@
+version: '3.9'  # Puedes eliminar la versión si tu Docker Compose la soporta
 
 services:
   db:
-    image: postgres:13
-    container_name: postgres_db
+    image: postgres:15
+    container_name: db
     restart: always
-    environment:    
+    environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
@@ -22,12 +23,12 @@ services:
     container_name: app
     restart: always
     ports:
-     - '3000:3000'  
+      - '3000:3000'  
     depends_on:
       - db
-    comand: /wait-for-it.sh db:5432 -- npm run start
+    command: /wait-for-it.sh db:5432 -- npm run start
     environment:
-      DB_HOST: ${DB_HOST}
+      DB_HOST: db
       DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}
       DB_PASSWORD: ${DB_PASSWORD}
@@ -37,6 +38,7 @@ services:
 
 networks:
   ecomm-network:
+    driver: bridge  # Solo el driver, sin 'name'
 
 volumes:
   ecomm_db_data:
