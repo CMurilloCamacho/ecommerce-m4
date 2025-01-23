@@ -8,6 +8,7 @@ dotenvConfig({
 
 const config = {
   type: 'postgres',
+//   url: `process.env.DB_URL`,
   host: `${process.env.DB_HOST}` || 'localhost',
   username: `${process.env.DB_USERNAME}`,
   port: `${Number(process.env.DB_PORT)}`,
