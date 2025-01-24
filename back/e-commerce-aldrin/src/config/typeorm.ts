@@ -15,7 +15,7 @@ const config = {
     preferNative: true, // Fuerza el uso de conexiones nativas
     connectTimeoutMS: 30000, // Establece un tiempo de espera más largo
   },
-//   url: `process.env.DB_URL`,
+  url: `${process.env.DATABASE_URL}`,
   host: `${process.env.DB_HOST}` || 'localhost',
   username: `${process.env.DB_USERNAME}`,
   port: `${Number(process.env.DB_PORT)}`,
