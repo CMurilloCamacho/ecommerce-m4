@@ -8,6 +8,9 @@ dotenvConfig({
 
 const config = {
   type: 'postgres',
+  ssl: {
+    rejectUnauthorized: false,  // Permite la conexión SSL
+  },
 //   url: `process.env.DB_URL`,
   host: `${process.env.DB_HOST}` || 'localhost',
   username: `${process.env.DB_USERNAME}`,
@@ -21,6 +24,7 @@ const config = {
   synchronize: true,
   retryAttempts: 10,
   retryDelay: 5000,
+  
   
 };
 export default registerAs('typeorm', () => config);
