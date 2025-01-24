@@ -11,6 +11,10 @@ const config = {
   ssl: {
     rejectUnauthorized: false,  // Permite la conexión SSL
   },
+  extra: {
+    preferNative: true, // Fuerza el uso de conexiones nativas
+    connectTimeoutMS: 30000, // Establece un tiempo de espera más largo
+  },
 //   url: `process.env.DB_URL`,
   host: `${process.env.DB_HOST}` || 'localhost',
   username: `${process.env.DB_USERNAME}`,
