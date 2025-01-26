@@ -15,7 +15,8 @@ const config = {
     preferNative: true, // Fuerza el uso de conexiones nativas
     connectTimeoutMS: 30000, // Establece un tiempo de espera más largo
   },
-//   url: `${process.env.DATABASE_URL}`,
+//   url: 'postgresql://ecomm_postgres_user:cFX6FsBA5w3lbiRFN9RHm8oRvMCRhd3c@dpg-cuanuhhu0jms73fprmdg-a.oregon-postgres.render.com/ecomm_postgres',
+  url: `${process.env.DATABASE_URL}`,
   host: `${process.env.DB_HOST}` || 'localhost',
   username: `${process.env.DB_USERNAME}`,
   port: `${Number(process.env.DB_PORT)}`,
