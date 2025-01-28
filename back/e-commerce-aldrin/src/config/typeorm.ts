@@ -8,25 +8,24 @@ dotenvConfig({
 
 const config = {
   type: 'postgres',
-  ssl: {
-    rejectUnauthorized: false,  // Permite la conexión SSL
-  },
-  extra: {
-    preferNative: true, // Fuerza el uso de conexiones nativas
-    connectTimeoutMS: 30000, // Establece un tiempo de espera más largo
-  },
-//   url: 'postgresql://ecomm_postgres_user:cFX6FsBA5w3lbiRFN9RHm8oRvMCRhd3c@dpg-cuanuhhu0jms73fprmdg-a.oregon-postgres.render.com/ecomm_postgres',
-  url: `${process.env.DATABASE_URL}`,
   host: `${process.env.DB_HOST}` || 'localhost',
   username: `${process.env.DB_USERNAME}`,
-  port: `${Number(process.env.DB_PORT)}`,
   password: `${process.env.DB_PASSWORD}`,
   database: `${process.env.DB_NAME}`,
+  dbport: `${parseInt(process.env.DB_PORT,10)}`|| 5432,
+  ssl: process.env.DB_SSL === 'true',
+  extra: {
+    ssl:
+    process.env.DB_SSL === 'true'? {
+        rejectUnauthorized: false,
+    }: null ,
+  },
   entities: ['dist/**/*.entity{.ts,.js}'],
   migration:['dist/**/migrations/*{.ts,.js}'],
   autoLoadEntities: true,
   dropSchema: true,
   synchronize: true,
+  
   retryAttempts: 10,
   retryDelay: 5000,
   
